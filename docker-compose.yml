@@ -1,0 +1,22 @@
+services:
+  mjpg-streamer:
+    build: .
+    ports:
+      - "8080:8080"
+    devices:
+      - "/dev/video0:/dev/video0"
+    environment:
+      - RESOLUTION=${RESOLUTION}
+      - FRAMERATE=${FRAMERATE}
+    restart: unless-stopped
+
+  netdata:
+    image: netdata/netdata:latest
+    container_name: netdata
+    ports:
+      - "19999:19999"
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    restart: unless-stopped
