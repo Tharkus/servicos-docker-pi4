@@ -1,3 +1,5 @@
+version: '3.7'
+
 services:
   netdata:
     image: netdata/netdata:latest
@@ -9,3 +11,4 @@ services:
     security_opt:
       - apparmor:unconfined
     restart: unless-stopped
+

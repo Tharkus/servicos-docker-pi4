@@ -13,11 +13,21 @@ echo "Log da instalação: $LOG_FILE"
 
 exec > >(tee "$LOG_FILE") 2>&1
 
+<<<<<<< HEAD
+=======
+# Verifica se está rodando como root
+>>>>>>> b8f083d (Adicionando o script install_services.sh e atualizando docker-compose.yml)
 if [ "$EUID" -ne 0 ]; then
   echo -e "\e[1;31m[ERRO]\e[0m Por favor, execute como root (use sudo)."
   exit 1
 fi
 
+<<<<<<< HEAD
+=======
+# Usa o diretório correto, seja como root ou usuário normal
+USER_HOME=$(eval echo ~$SUDO_USER)
+
+>>>>>>> b8f083d (Adicionando o script install_services.sh e atualizando docker-compose.yml)
 # Instalação de dependências
 apt update
 apt install -y docker.io docker-compose git build-essential cmake libjpeg62-turbo-dev imagemagick libv4l-dev avahi-daemon
@@ -30,6 +40,7 @@ systemctl start avahi-daemon
 
 echo -e "\e[1;36m[INFO]\e[0m Docker e dependências instaladas."
 
+<<<<<<< HEAD
 # Função para instalar o MJPG-Streamer
 install_mjpg_streamer() {
   echo -e "\e[1;32m[✔]\e[0m Instalando MJPG-Streamer..."
@@ -253,6 +264,21 @@ services:
 volumes:
   nginx_proxy_manager_data:
 EOF
+=======
+# Função para executar o docker-compose para cada serviço
+run_docker_compose() {
+  SERVICE_DIR="$USER_HOME/servicos-docker-pi4/$1"  # Usa o caminho correto com $USER_HOME
+  
+  # Verificar se o diretório existe
+  if [ ! -d "$SERVICE_DIR" ]; then
+    echo -e "\e[1;31m[ERRO]\e[0m Diretório $SERVICE_DIR não encontrado. Certifique-se de que o serviço foi configurado corretamente."
+    return 1
+  fi
+
+  echo -e "\e[1;32m[✔]\e[0m Subindo os containers em $SERVICE_DIR..."
+  cd "$SERVICE_DIR"
+  docker-compose up -d  # Executando o serviço sem a opção --build
+>>>>>>> b8f083d (Adicionando o script install_services.sh e atualizando docker-compose.yml)
 }
 
 # Perguntar ao usuário quais serviços ele quer instalar
@@ -270,6 +296,7 @@ echo "10) Nginx Proxy Manager"
 echo "11) Todos os serviços"
 read -p "Digite os números separados por espaço (ex: 1 2 3): " services
 
+<<<<<<< HEAD
 # Instalar os serviços selecionados
 for service in $services; do
   case $service in
@@ -294,6 +321,63 @@ for service in $services; do
       install_grafana
       install_jellyfin
       install_nginx_proxy_manager
+=======
+# Instalar e subir os serviços selecionados
+for service in $services; do
+  case $service in
+    1) 
+      echo -e "\e[1;32m[✔]\e[0m Instalando MJPG-Streamer..."
+      run_docker_compose "mjpg-streamer"
+      ;;
+    2) 
+      echo -e "\e[1;32m[✔]\e[0m Instalando Netdata..."
+      run_docker_compose "netdata"
+      ;;
+    3) 
+      echo -e "\e[1;32m[✔]\e[0m Instalando Portainer..."
+      run_docker_compose "portainer"
+      ;;
+    4) 
+      echo -e "\e[1;32m[✔]\e[0m Instalando Home Assistant..."
+      run_docker_compose "home-assistant"
+      ;;
+    5) 
+      echo -e "\e[1;32m[✔]\e[0m Instalando Nextcloud..."
+      run_docker_compose "nextcloud"
+      ;;
+    6) 
+      echo -e "\e[1;32m[✔]\e[0m Instalando Transmission..."
+      run_docker_compose "transmission"
+      ;;
+    7) 
+      echo -e "\e[1;32m[✔]\e[0m Instalando Pi-hole..."
+      run_docker_compose "pihole"
+      ;;
+    8) 
+      echo -e "\e[1;32m[✔]\e[0m Instalando Grafana..."
+      run_docker_compose "grafana-prometheus"
+      ;;
+    9) 
+      echo -e "\e[1;32m[✔]\e[0m Instalando Jellyfin..."
+      run_docker_compose "jellyfin"
+      ;;
+    10) 
+      echo -e "\e[1;32m[✔]\e[0m Instalando Nginx Proxy Manager..."
+      run_docker_compose "nginx-proxy-manager"
+      ;;
+    11) 
+      echo -e "\e[1;32m[✔]\e[0m Instalando todos os serviços..."
+      run_docker_compose "mjpg-streamer"
+      run_docker_compose "netdata"
+      run_docker_compose "portainer"
+      run_docker_compose "home-assistant"
+      run_docker_compose "nextcloud"
+      run_docker_compose "transmission"
+      run_docker_compose "pihole"
+      run_docker_compose "grafana-prometheus"
+      run_docker_compose "jellyfin"
+      run_docker_compose "nginx-proxy-manager"
+>>>>>>> b8f083d (Adicionando o script install_services.sh e atualizando docker-compose.yml)
       ;;
     *)
       echo -e "\e[1;31m[ERRO]\e[0m Opção inválida: $service"
@@ -301,8 +385,12 @@ for service in $services; do
   esac
 done
 
+<<<<<<< HEAD
 # Executar os containers
 echo -e "\e[1;36m[INFO]\e[0m Subindo os containers..."
 docker-compose up -d --build
 
 echo -e "\n\e[1;32m[✔]\e[0m Instalação completa."
+=======
+echo -e "\e[1;32m[✔]\e[0m Instalação e execução dos contêineres concluída."
+>>>>>>> b8f083d (Adicionando o script install_services.sh e atualizando docker-compose.yml)
